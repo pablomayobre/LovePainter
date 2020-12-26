@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es2018",
+    "moduleResolution": "node",
+    "module": "es2020",
+    "allowJs" : true,
+    "outDir": "build",
+    "strict": true,
+    "jsx": "react-jsx",
+  }
+}
