@@ -1,4 +1,4 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session } from "next-auth";
 import Providers from "next-auth/providers";
 import type { NextApiRequest, NextApiResponse } from "next";
 
@@ -14,4 +14,26 @@ if (process.env.GITHUB_ID && process.env.GITHUB_SECRET)
   );
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
-  NextAuth(req, res, { providers });
+  NextAuth(req, res, {
+    jwt: {
+      secret: process.env.JWT_SECRET ?? "",
+      encryption: true,
+    },
+    callbacks: {
+      session: async (session, token: any) => {
+        const newSession: Session & { oauth: string } = {
+          ...session,
+          oauth: token.oauth,
+        };
+        return Promise.resolve(newSession);
+      },
+      jwt: async (token, _user, account, _profile, _isNewUser) => {
+        if (account) {
+          token.oauth = account.accessToken;
+        }
+
+        return Promise.resolve(token);
+      },
+    },
+    providers,
+  });
