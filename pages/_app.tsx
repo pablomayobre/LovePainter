@@ -1,6 +1,7 @@
-import "../styles/globals.css";
 import { Provider } from "next-auth/client";
 import { AppProps } from "next/dist/next-server/lib/router/router";
+
+require("../styles/globals.less");
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
