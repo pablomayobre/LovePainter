@@ -7,23 +7,26 @@ import { Providers } from "../screens/Login";
 const Login = dynamic(() => import("../screens/Login"));
 const GistList = dynamic(() => import("../screens/GistList"));
 
-export const getServerSideProps: GetServerSideProps<Gists & Providers> = async (
+export const getServerSideProps: GetServerSideProps<Gists | Providers> = async (
   context
 ) => {
   const session = await getSession(context);
 
-  return {
-    props: {
-      providers: await getProviders(),
-      ...(await getGists({ session })),
-    },
-  };
+  const gists = await getGists({ session });
+
+  if (!gists)
+    return {
+      props: { type: "providers", providers: await getProviders() },
+    };
+  else
+    return {
+      props: gists,
+    };
 };
 
-export default function Page({
-  providers,
-  ...gists
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  if (!gists.oauth) return <Login providers={providers} />;
-  else return <GistList {...gists} />;
+export default function Page(
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) {
+  if (props.type === "providers") return <Login {...props} />;
+  else return <GistList {...props} />;
 }

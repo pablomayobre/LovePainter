@@ -1,0 +1,33 @@
+@import "./variables.less";
+
+.ant-layout-header {
+  background-color: @card-background;
+  border: 1px solid @divider-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: fixed;
+  width: 100%;
+  max-width: @max-content-width + 20;
+  z-index: 1;
+
+  padding: 0 1em;
+
+  border-bottom-left-radius: @card-radius;
+  border-bottom-right-radius: @card-radius;
+
+  // .ant-avatar {
+  //   border: 1px solid @white;
+  // }
+
+  // color: @white;
+  // .ant-btn {
+  //   color: @white;
+  // }
+
+  .ant-typography {
+  //   color: @white;
+    align-self: flex-end;
+  }
+}

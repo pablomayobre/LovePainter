@@ -2,9 +2,9 @@ import { Octokit } from "@octokit/rest";
 import { Session } from "next-auth/client";
 
 const getPageCount = (link: string) => {
-  const lastPage = /\?page=(\d+)&.+?rel="last"/gi.exec(link);
+  const lastPage = /[^_]page=(\d+)[^"]+?rel="last"/gi.exec(link);
 
-  return lastPage !== null ? +lastPage : 1;
+  return lastPage !== null ? +lastPage[1] : 1;
 };
 
 type Files = Record<
@@ -51,8 +51,12 @@ const dataToGist = (value: Data): Gist => {
 };
 
 export type Gists = {
+  type: "gists";
+  link: string;
+  avatar: string;
+  name: string;
   pages: number;
-  oauth?: string;
+  oauth: string;
   current: number;
   gists: Gist[];
 };
@@ -67,20 +71,29 @@ export const getGists = async ({
   session?: ModifiedSession;
   perPage?: number;
   page?: number;
-}): Promise<Gists> => {
-  if (!session || !session.oauth)
-    return { oauth: undefined, pages: 1, current: 1, gists: [] };
+}): Promise<Gists | null> => {
+  if (!session || !session.oauth || !session.user.image || !session.user.name)
+    return null;
 
-  const req = await new Octokit({
+  const octo = new Octokit({
     auth: session.oauth,
-  }).gists.list({ per_page: perPage, page: page });
+  })
+  
+  const [user, req] = await Promise.all([
+    octo.users.getAuthenticated(),
+    octo.gists.list({ per_page: perPage, page: page })
+  ])
 
   const pages = getPageCount(req.headers.link ? req.headers.link : "");
 
   return {
+    type: "gists",
+    avatar: session.user.image,
+    link: user.data.html_url,
+    name: session.user.name,
     pages,
     oauth: session.oauth,
-    current: Math.max(page, pages),
+    current: Math.min(page, pages),
     gists: req.data.map(dataToGist),
   };
 };
