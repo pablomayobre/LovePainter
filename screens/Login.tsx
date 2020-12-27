@@ -2,7 +2,7 @@ import { getProviders, signIn } from "next-auth/client";
 import { Button, Card, Row, Col, Typography, Space } from "antd";
 import { GithubOutlined } from "@ant-design/icons";
 
-const { Title, Paragraph, Link } = Typography;
+const { Title, Paragraph, Link, Text } = Typography;
 
 export type Providers = {
   type: "providers";
@@ -48,7 +48,7 @@ export default function SignIn({ providers }: Providers) {
               onClick={() => signIn(provider.id)}
             >
               <GithubOutlined />
-              Sign in with {provider.name}
+              <Text strong style={{color: "white"}}>Sign in with {provider.name}</Text>
             </Button>
           ))
         ) : (

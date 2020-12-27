@@ -19,13 +19,14 @@ import { Gists } from "../utils/getGists";
 import {
   FileOutlined,
   GithubOutlined,
+  PlusOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import { forwardRef, HTMLProps, useEffect } from "react";
 
 require("../styles/header.less");
 
-const { Title, Paragraph, Text } = Typography;
+const { Title, Text } = Typography;
 const { Header, Content } = Layout;
 const { Ribbon } = Badge;
 
@@ -79,17 +80,18 @@ export default function GitList(gists: Gists) {
         </Tooltip>
       </Header>
       <Content
-        style={{ padding: "82px 10px 12px", width: "100%", maxWidth: 820 }}
+        style={{ padding: "82px 10px 24px", width: "100%", maxWidth: 820 }}
       >
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
-          <Button
-            style={{ width: "100%", borderRadius: 10 }}
-            type="default"
-            block
-            size="large"
-            onClick={() => console.log("Create New Gist")}
-          >
-            <Text strong>New Gist</Text>
+        <Button
+              style={{ width: "100%", borderRadius: 10, backgroundColor: "black", borderColor: "#333333" }}
+              block
+              type="primary"
+              size="large"
+              onClick={() => console.log("New Gist")}
+            >
+              <PlusOutlined />
+              <Text strong style={{color: "white"}}>New Gist</Text>
           </Button>
           {gists.gists.map((gist, index) => {
             const files = (
@@ -141,7 +143,7 @@ export default function GitList(gists: Gists) {
                       </Popover>,
                     ]}
                   >
-                    <Paragraph>{gist.description}</Paragraph>
+                    <Text>{gist.description}</Text>
                   </Card>
                 </Link>
               </Ribbon>
