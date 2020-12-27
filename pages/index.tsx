@@ -11,17 +11,36 @@ export const getServerSideProps: GetServerSideProps<Gists | Providers> = async (
   context
 ) => {
   const session = await getSession(context);
+  const {query, res} = context;
 
-  const gists = await getGists({ session });
+  let page = 1
+
+  if (query.page) {
+    if (typeof query.page === "string")
+      page = +query.page;
+    else
+      page = +query.page[query.page.length - 1]
+  }
+
+  page = isNaN(page) ? 1 : (page <= 0 ? 1 : page)
+
+  const gists = await getGists({ session, page });
 
   if (!gists)
     return {
       props: { type: "providers", providers: await getProviders() },
     };
-  else
+  else {
+    if (gists.current !== page) {
+      context.res.setHeader("location", `/?page=${gists.current}`);
+      context.res.statusCode = 302;
+      context.res.end();
+    }
+
     return {
       props: gists,
     };
+  }
 };
 
 export default function Page(

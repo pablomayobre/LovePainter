@@ -1,10 +1,10 @@
 import { Octokit } from "@octokit/rest";
 import { Session } from "next-auth/client";
 
-const getPageCount = (link: string) => {
+const getPageCount = (link: string, current: number) => {
   const lastPage = /[^_]page=(\d+)[^"]+?rel="last"/gi.exec(link);
 
-  return lastPage !== null ? +lastPage[1] : 1;
+  return lastPage !== null ? +lastPage[1] : current;
 };
 
 type Files = Record<
@@ -84,7 +84,7 @@ export const getGists = async ({
     octo.gists.list({ per_page: perPage, page: page })
   ])
 
-  const pages = getPageCount(req.headers.link ? req.headers.link : "");
+  const pages = getPageCount(req.headers.link ? req.headers.link : "", page);
 
   return {
     type: "gists",

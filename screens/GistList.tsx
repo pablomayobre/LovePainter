@@ -3,23 +3,25 @@ import {
   Avatar,
   Layout,
   Button,
+  Row,
   Tooltip,
   Typography,
-  Col,
   Card,
   Space,
   Popover,
+  Pagination,
 } from "antd";
 import TimeAgo from "react-timeago";
 import Link from "next/link";
-import { signout, useSession } from "next-auth/client";
+import { signout } from "next-auth/client";
+import { useRouter } from "next/router";
 import { Gists } from "../utils/getGists";
 import {
   FileOutlined,
   GithubOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import { forwardRef, ReactNode } from "react";
+import { forwardRef, HTMLProps, useEffect } from "react";
 
 require("../styles/header.less");
 
@@ -27,14 +29,14 @@ const { Title, Paragraph, Text } = Typography;
 const { Header, Content } = Layout;
 const { Ribbon } = Badge;
 
-const Wall = forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
+const Wall = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
   ({ children, onClick, ...props }, ref) => {
     return (
       <div
         ref={ref}
         {...props}
         onClick={(event) => {
-          onClick?.(event)
+          onClick?.(event);
           event.stopPropagation();
         }}
       >
@@ -45,6 +47,13 @@ const Wall = forwardRef<HTMLDivElement, React.HTMLProps<HTMLDivElement>>(
 );
 
 export default function GitList(gists: Gists) {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.query.page !== `${gists.current}`)
+      router.replace(`/?page=${gists.current}`, undefined, { shallow: true });
+  }, [])
+
   return (
     <Layout style={{ alignItems: "center", minHeight: "100vh", width: "100%" }}>
       <Header>
@@ -69,7 +78,9 @@ export default function GitList(gists: Gists) {
           />
         </Tooltip>
       </Header>
-      <Content style={{ padding: "72px 10px", width: "100%", maxWidth: 820 }}>
+      <Content
+        style={{ padding: "82px 10px 12px", width: "100%", maxWidth: 820 }}
+      >
         <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           <Button
             style={{ width: "100%", borderRadius: 10 }}
@@ -95,7 +106,7 @@ export default function GitList(gists: Gists) {
                 text={gist.public ? "Public" : "Secret"}
                 color={gist.public ? "green" : "blue"}
               >
-                <Link href={`/#${gist.id}`}>
+                <Link href={`${router.asPath}#${gist.id}`}>
                   <Card
                     hoverable
                     title={gist.name}
@@ -136,6 +147,18 @@ export default function GitList(gists: Gists) {
               </Ribbon>
             );
           })}
+          <Row justify="center">
+            <Pagination
+              simple
+              hideOnSinglePage
+              defaultPageSize={1}
+              total={gists.pages}
+              current={gists.current}
+              onChange={(page: number) => {
+                router.push(`/?page=${page}`);
+              }}
+            />
+          </Row>
         </Space>
       </Content>
     </Layout>
