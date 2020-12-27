@@ -21,7 +21,7 @@ type Data = {
   public: boolean;
   node_id: string;
   created_at: string;
-  url: string;
+  html_url: string;
 };
 
 type Gist = {
@@ -46,7 +46,7 @@ const dataToGist = (value: Data): Gist => {
     public: value.public,
     nodeId: value.node_id,
     createdAt: value.created_at,
-    url: value.url,
+    url: value.html_url
   };
 };
 
