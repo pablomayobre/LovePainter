@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ant-design/icons": "^4.3.0",
     "@octokit/rest": "^18.0.12",
     "antd": "^4.9.4",
     "css-loader": "^5.0.1",
