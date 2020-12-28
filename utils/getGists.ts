@@ -24,7 +24,7 @@ type Data = {
   html_url: string;
 };
 
-type Gist = {
+export type Gist = {
   description: string;
   id: string;
   name: string;

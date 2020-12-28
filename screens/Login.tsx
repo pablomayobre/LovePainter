@@ -1,8 +1,9 @@
 import { getProviders, signIn } from "next-auth/client";
-import { Button, Card, Row, Col, Typography, Space } from "antd";
+import { Card, Row, Typography } from "antd";
 import { GithubOutlined } from "@ant-design/icons";
+import MainButton from "../components/MainButton";
 
-const { Title, Paragraph, Link, Text } = Typography;
+const { Title, Paragraph, Link } = Typography;
 
 export type Providers = {
   type: "providers";
@@ -13,13 +14,9 @@ export type Providers = {
 
 export default function SignIn({ providers }: Providers) {
   return (
-    <Row
-      justify="center"
-      align="middle"
-      style={{ minHeight: "100vh", padding: 20 }}
-    >
+    <Row justify="center" style={{margin: "24px 8px", maxWidth: 500}}>
       <Card
-        style={{ width: "100%", maxWidth: 500, margin: "0 auto" }}
+        style={{ width: "100%" }}
         cover={<img alt="LovePainter Logo" src="/heart.svg" />}
       >
         <div style={{ textAlign: "center" }}>
@@ -39,17 +36,11 @@ export default function SignIn({ providers }: Providers) {
         </div>
         {providers ? (
           Object.values(providers).map((provider) => (
-            <Button
-              style={{ backgroundColor: "black", borderColor: "#333333" }}
-              key={provider.id}
-              block
-              type="primary"
-              size="large"
+            <MainButton
               onClick={() => signIn(provider.id)}
-            >
-              <GithubOutlined />
-              <Text strong style={{color: "white"}}>Sign in with {provider.name}</Text>
-            </Button>
+              icon={<GithubOutlined />}
+              text={`Sign in with ${provider.name}`}
+            />
           ))
         ) : (
           <Title level={2}>Error: Github sign in is not configured</Title>
