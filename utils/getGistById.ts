@@ -3,6 +3,14 @@ import { ModifiedSession } from "./getGists";
 
 export type FullGist = ReturnType<typeof getGistById> extends Promise<infer T> ? T : never
 
+const getGistSafely = async (octokit: Octokit, id: string) => {
+  try {
+    return await octokit.gists.get({ gist_id: id })
+  } catch (e) {
+    return undefined
+  }
+}
+
 export const getGistById = async ({
   session,
   id
@@ -17,9 +25,9 @@ export const getGistById = async ({
     auth: session.oauth,
   })
   
-  const [user, req] = await Promise.all([octo.users.getAuthenticated(), octo.gists.get({ gist_id: id })])
+  const [user, req] = await Promise.all([octo.users.getAuthenticated(), getGistSafely(octo, id)])
   
-  if (!req.data.owner || req.data.owner.id !== user.data.id) {
+  if (!req || !req.data.owner || req.data.owner.id !== user.data.id) {
     return
   }
   

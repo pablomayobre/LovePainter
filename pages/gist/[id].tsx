@@ -34,7 +34,7 @@ export const getServerSideProps: GetServerSideProps<{
 const Gist = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
-  
+  return null
 };
 
 export default Gist;
