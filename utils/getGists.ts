@@ -61,7 +61,7 @@ export type Gists = {
   gists: Gist[];
 };
 
-type ModifiedSession = null | (Session & { oauth?: string });
+export type ModifiedSession = null | (Session & { oauth?: string });
 
 export const getGists = async ({
   session,

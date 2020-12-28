@@ -32,9 +32,9 @@ export const getServerSideProps: GetServerSideProps<Gists | Providers> = async (
     };
   else {
     if (gists.current !== page) {
-      context.res.setHeader("location", `/?page=${gists.current}`);
-      context.res.statusCode = 302;
-      context.res.end();
+      res.setHeader("location", `/?page=${gists.current}`);
+      res.statusCode = 302;
+      res.end();
     }
 
     return {

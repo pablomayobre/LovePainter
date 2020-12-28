@@ -2,7 +2,6 @@ import { Gist } from "../utils/getGists";
 import { Badge, Typography, Card, Space, Popover } from "antd";
 import TimeAgo from "react-timeago";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { FileOutlined, GithubOutlined } from "@ant-design/icons";
 import Wall from "./Wall";
 
@@ -59,14 +58,12 @@ const TimePopup = ({date, title}: {date: string, title: string}) => {
 }
 
 const GistCard = ({ gist }: { gist: Gist }) => {
-  const router = useRouter();
-
   return (
     <Ribbon
       text={gist.public ? "Public" : "Secret"}
       color={gist.public ? "green" : "blue"}
     >
-      <Link href={`${router.asPath}#${gist.id}`}>
+      <Link href={`/gist/${gist.id}`}>
         <Card
           hoverable
           title={gist.name}
